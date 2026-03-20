@@ -1,7 +1,0 @@
-INDEX VERSION 1.134+C:\Users\adity\OneDrive\Desktop\Java_Capgemini_training\Week-4-Assessment\.metadata\.plugins\org.eclipse.jdt.core
-1865797976.index
-1172446264.index
-570716226.index
-3440970420.index
-3639252503.index
-141577792.index
