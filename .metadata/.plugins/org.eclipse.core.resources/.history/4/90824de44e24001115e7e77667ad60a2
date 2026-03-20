@@ -1,0 +1,64 @@
+package com.capgemini.model.service;
+
+import com.capgemini.model.entity.Customer;
+import com.capgemini.model.exception.DuplicateResourceException;
+import com.capgemini.model.exception.ResourceNotFoundException;
+import com.capgemini.model.repository.CustomerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class CustomerService {
+
+	@Autowired
+	private CustomerRepository repo;
+
+	public Customer create(Customer c) {
+		if (repo.findByEmail(c.getEmail()).isPresent()) {
+			throw new DuplicateResourceException("Email already registered");
+		}
+		c.setIsActive(true);
+		return repo.save(c);
+	}
+
+	public List<Customer> getAll() {
+		return repo.findByIsActiveTrue();
+	}
+
+	public Customer getById(int id) {
+		Customer c = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+		if (!c.getIsActive())
+			throw new ResourceNotFoundException("Customer not found");
+		return c;
+	}
+
+	public Customer update(int id, Customer updated) {
+		Customer c = getById(id);
+
+		if (!c.getEmail().equals(updated.getEmail())) {
+			if (repo.findByEmail(updated.getEmail()).isPresent()) {
+				throw new DuplicateResourceException("Email already registered");
+			}
+			c.setEmail(updated.getEmail());
+		}
+
+		c.setFullName(updated.getFullName());
+		c.setPhone(updated.getPhone());
+
+		return repo.save(c);
+	}
+
+	public void delete(int id) {
+		Customer c = getById(id);
+		c.setIsActive(false);
+		repo.save(c);
+	}
+
+	public Customer restore(int id) {
+		Customer c = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+		c.setIsActive(true);
+		return repo.save(c);
+	}
+}

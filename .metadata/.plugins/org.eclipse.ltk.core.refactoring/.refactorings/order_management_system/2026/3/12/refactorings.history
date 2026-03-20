@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete element from project &apos;order_management_system&apos;&#x0D;&#x0A;- Original project: &apos;order_management_system&apos;&#x0D;&#x0A;- Original element: &apos;order_management_system/src/main/java/com.capgemini.model.repository&apos;" description="Delete element" element1="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.capgemini.model.repository" elements="1" flags="589830" id="org.eclipse.jdt.ui.delete" resources="0" stamp="1773986297753" subPackages="false" version="1.0"/>
+</session>

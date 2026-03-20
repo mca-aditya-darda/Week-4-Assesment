@@ -1,0 +1,7 @@
+@Data
+public class CustomerDTO {
+    private Integer customerId;
+    private String fullName;
+    private String email;
+    private String phone;
+}

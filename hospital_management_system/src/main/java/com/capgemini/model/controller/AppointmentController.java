@@ -1,0 +1,50 @@
+package com.capgemini.model.controller;
+
+import com.capgemini.model.dto.AppointmentDTO;
+import com.capgemini.model.entity.Appointment;
+import com.capgemini.model.service.AppointmentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api")
+public class AppointmentController {
+
+	@Autowired
+	private AppointmentService appointmentService;
+
+	@PostMapping("/doctors/{doctorId}/appointments")
+	public AppointmentDTO create(@PathVariable int doctorId, @RequestBody AppointmentDTO dto) {
+		return appointmentService.createAppointment(doctorId, dto);
+	}
+
+	@GetMapping("/doctors/{doctorId}/appointments")
+	public Page<Appointment> getAll(@PathVariable int doctorId, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "5") int size) {
+		return appointmentService.getAppointments(doctorId, page, size);
+	}
+
+	@GetMapping("/doctors/{doctorId}/appointments/{apptId}")
+	public Appointment getOne(@PathVariable int doctorId, @PathVariable int apptId) {
+		return appointmentService.getAppointmentById(doctorId, apptId);
+	}
+
+	@PutMapping("/doctors/{doctorId}/appointments/{apptId}")
+	public Appointment update(@PathVariable int doctorId, @PathVariable int apptId, @RequestBody AppointmentDTO dto) {
+		return appointmentService.updateAppointment(doctorId, apptId, dto);
+	}
+
+	@DeleteMapping("/doctors/{doctorId}/appointments/{apptId}")
+	public String delete(@PathVariable int doctorId, @PathVariable int apptId) {
+		appointmentService.deleteAppointment(doctorId, apptId);
+		return "Appointment deleted successfully";
+	}
+
+	@GetMapping("/appointments/pending")
+	public List<Appointment> pending() {
+		return appointmentService.getPendingAppointments();
+	}
+}

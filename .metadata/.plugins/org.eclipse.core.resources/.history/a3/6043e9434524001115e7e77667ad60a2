@@ -1,0 +1,5 @@
+package com.capgemini.model.config;
+
+public class AuditConfig {
+
+}

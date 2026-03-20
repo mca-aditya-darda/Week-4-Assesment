@@ -1,0 +1,16 @@
+package com.capgemini.model.repository;
+
+import com.capgemini.model.entity.Order;
+import com.capgemini.model.dto.RevenueDTO;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.repository.*;
+import java.util.List;
+
+public interface OrderRepository extends JpaRepository<Order, Integer> {
+
+	Page<Order> findByCustomerCustomerIdAndStatus(Integer customerId, String status, Pageable pageable);
+
+	@Query("SELECT new com.capgemini.model.dto.RevenueDTO(c.fullName, SUM(o.totalAmount)) "
+			+ "FROM Order o JOIN o.customer c WHERE o.status='DELIVERED' GROUP BY c.fullName")
+	List<RevenueDTO> getRevenueSummary();
+}

@@ -1,0 +1,31 @@
+package com.capgemini.model.entity;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.List;
+
+@Entity
+@Table(name = "doctors", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Doctor {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer doctorId;
+
+	private String name;
+	private String specialization;
+
+	@Column(unique = true)
+	private String email;
+
+	private String phone;
+
+	@OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
+	private List<Appointment> appointments;
+}

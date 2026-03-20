@@ -1,0 +1,57 @@
+package com.capgemini.model.service;
+
+import com.capgemini.model.entity.Customer;
+import com.capgemini.model.exception.*;
+import com.capgemini.model.repository.CustomerRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class CustomerService {
+
+	private final CustomerRepository repo;
+
+	public Customer create(Customer c) {
+
+	    if (repo.findByEmail(c.getEmail()).isPresent()) {
+	        throw new DuplicateResourceException("Email already exists");
+	    }
+
+	    if (c.getIsActive() == null) {
+	        c.setIsActive(true);
+	    }
+
+	    return repo.save(c);
+	}
+
+	public List<Customer> getAll() {
+		return repo.findByIsActiveTrue();
+	}
+
+	public Customer get(Long id) {
+		return repo.findById(id).filter(Customer::getIsActive)
+				.orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+	}
+
+	public Customer update(Long id, Customer updated) {
+		Customer c = get(id);
+		c.setFullName(updated.getFullName());
+		c.setPhone(updated.getPhone());
+		return repo.save(c);
+	}
+
+	public void delete(Long id) {
+		Customer c = get(id);
+		c.setIsActive(false);
+		repo.save(c);
+	}
+
+	public void restore(Long id) {
+		Customer c = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+		c.setIsActive(true);
+		repo.save(c);
+	}
+}

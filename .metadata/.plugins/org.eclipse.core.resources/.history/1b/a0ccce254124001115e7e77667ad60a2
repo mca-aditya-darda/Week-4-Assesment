@@ -1,0 +1,56 @@
+package com.capgemini.model.service;
+
+import com.capgemini.model.dto.DoctorDTO;
+import com.capgemini.model.entity.Doctor;
+import com.capgemini.model.exception.DuplicateResourceException;
+import com.capgemini.model.exception.ResourceNotFoundException;
+import com.capgemini.model.repository.DoctorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class DoctorService {
+
+	@Autowired
+	private DoctorRepository doctorRepository;
+
+	public DoctorDTO createDoctor(Doctor doctor) {
+
+		if (doctorRepository.findByEmail(doctor.getEmail()).isPresent()) {
+			throw new DuplicateResourceException("Email already registered");
+		}
+
+		Doctor saved = doctorRepository.save(doctor);
+
+		DoctorDTO dto = new DoctorDTO();
+		dto.setDoctorId(saved.getDoctorId());
+		dto.setName(saved.getName());
+		dto.setSpecialization(saved.getSpecialization());
+		dto.setEmail(saved.getEmail());
+		dto.setPhone(saved.getPhone());
+		dto.setTotalAppointments(0);
+
+		return dto;
+	}
+
+	public List<DoctorDTO> getAllDoctors() {
+		return doctorRepository.findAll().stream().map(d -> {
+			DoctorDTO dto = new DoctorDTO();
+			dto.setDoctorId(d.getDoctorId());
+			dto.setName(d.getName());
+			dto.setSpecialization(d.getSpecialization());
+			dto.setEmail(d.getEmail());
+			dto.setPhone(d.getPhone());
+			dto.setTotalAppointments(d.getAppointments() == null ? 0 : d.getAppointments().size());
+			return dto;
+		}).collect(Collectors.toList());
+	}
+
+	public Doctor getDoctorById(int id) {
+		return doctorRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Doctor with ID " + id + " not found"));
+	}
+}

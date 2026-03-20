@@ -1,0 +1,36 @@
+package com.capgemini.model.controller;
+
+import com.capgemini.model.entity.Customer;
+import com.capgemini.model.service.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/customers")
+public class CustomerController {
+
+    @Autowired
+    private CustomerService service;
+
+    @PostMapping
+    public Customer create(@RequestBody Customer c) {
+        return service.create(c);
+    }
+
+    @GetMapping
+    public List<Customer> getAll() {
+        return service.getAll();
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable int id) {
+        service.delete(id);
+    }
+
+    @GetMapping("/{id}/restore")
+    public Customer restore(@PathVariable int id) {
+        return service.restore(id);
+    }
+}
